@@ -32,17 +32,260 @@ Purpose:  This project continues developing Project3.
  
  */
 
+#include <iostream>
+
 /*
  copied UDT 1:
  */
+struct TeamProgram
+{
+    //sex
+    bool isMale { };
+    //maximum age
+    int maxAge;
+    //professional status
+    std::string profStatus { };
+    //number of staff
+    int numCoaches;
+    //total number of programs
+    int numPlayersInProgram = 0;
+    int maxNumPlayersInProgram;
+
+    float budgetPerAnnum = 0.f;
+    float currentBalance = 0.f;
+
+    bool isGameAtHome = { };
+    
+    TeamProgram() : maxAge(40), numCoaches(6), maxNumPlayersInProgram(24) { }
+
+    ~TeamProgram();
+
+    //enter a league
+    std::string enterALeague(float costToEnterLeague);
+    //determine number of coaches required
+    int numCoachesRequired();
+    //advertise for players
+    int advertiseForPlayers();
+};
+
+TeamProgram::~TeamProgram()
+{
+    std::cout << "Team Program destructed" << std::endl;
+}
+
+std::string TeamProgram::enterALeague(float costToEnterLeague)
+{
+    if(costToEnterLeague > budgetPerAnnum){
+        return "We can't afford to enter this league";
+    }
+
+    for(int i = 0; i < 3; ++i)
+    {
+        currentBalance -= costToEnterLeague;
+        if(currentBalance < 0)
+        {
+            return "We've run out of cash!";
+        }
+        else
+        {
+            std::cout << "We can enter for another year" << std::endl;
+            if(i > 2)
+            {
+                std::cout << "We can enter the league for 3 seasons" << std::endl;
+            }
+        }
+    }
+    return "We've still got some money left!";
+}
+
+int TeamProgram::numCoachesRequired()
+{
+    if(isGameAtHome)
+    {
+        return numCoaches;
+    }
+    return numCoaches/2;
+}
+
+int TeamProgram::advertiseForPlayers()
+{
+    return maxNumPlayersInProgram - numPlayersInProgram;
+}
 
 /*
  copied UDT 2:
  */
+struct Staff
+{
+    //type
+    std::string type;
+    //sex
+    bool isPlayerMale;
+    //age
+    int age;
+    //hours of work
+    float hoursOfWork;
+    float requiredHoursOfWork;
+    //days of work
+    int daysOfWork;
+    
+    bool hitOvertime;
+
+    std::string injuryType;
+    std::string name;
+
+    float salary;
+
+    Staff();
+
+    ~Staff();
+
+    void daysAndHoursCalculator(int typeOfDay);
+
+    //go to work
+    bool overtimeCalculator();
+    //attend meeting
+    void attendMeeting();
+    //sign a contract
+    bool signContract(float contractOffer = 20000.f);
+};
+
+Staff::Staff()
+{
+    type = { };
+    isPlayerMale = true;
+    age = 0;
+    hoursOfWork = 40.f;
+    requiredHoursOfWork = 40.f;
+    daysOfWork = 5;
+    hitOvertime = false;
+    injuryType = "None";
+    salary = 0.f;
+    name = { };
+}
+
+Staff::~Staff()
+{
+    std::cout << "Staff destructed" << std::endl;
+}
+
+void Staff::daysAndHoursCalculator(int dayType)
+{
+    if(dayType)
+    {
+        hoursOfWork -= 8.f;
+        daysOfWork -= 1;
+    }
+    else
+    {
+        hoursOfWork -= 4.f;
+        daysOfWork -= 0.5;
+    }
+}
+
+bool Staff::overtimeCalculator()
+{
+    std::cout << "Standard working hours in a week for an employee must total " << requiredHoursOfWork << " before they hit overtime." << std::endl;
+    if(hoursOfWork < 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+void Staff::attendMeeting()
+{
+    std::cout << "All onsite meetings cancelled - login to Zoom" << std::endl;
+}
+
+bool Staff::signContract(float contractOffer)
+{
+    if(contractOffer > 20000.f)
+    {
+        return true;
+    }
+    return false;
+}
 
 /*
  copied UDT 3:
  */
+struct TrainingComplex
+{
+    //address of complex
+    std::string address = "1234 Sports Street";
+    //no of meals served in canteen a day
+    int numMealsServed;
+    //maximum deadlift weight in gym
+    float maxDeadliftWeight = 500.f;
+    //no of lockers in locker room
+    int numLockers = 100;
+    //no of car park spots
+    int numCarParkSpots = 75;
+
+    float costPerMeal = 1.23f;
+
+    std::string therapyType;
+
+    TrainingComplex();
+
+    ~TrainingComplex();
+
+    //host training session
+    void numOfFreeParkingSpaces(int, TeamProgram);
+    //feed staff
+    float costToFeedStaff(int howManyStaffWorkingToday = 75, int numTrainingSessions = 2);
+    //provide player rehab
+    void providePlayerRehab(Staff player);
+};
+
+TrainingComplex::TrainingComplex()
+{
+    numMealsServed = 0;
+    therapyType = { };
+}
+
+TrainingComplex::~TrainingComplex()
+{
+    std::cout << "Training Complex Destructed" << std::endl;
+}
+
+void TrainingComplex::numOfFreeParkingSpaces(int numStaffToday, TeamProgram myTeam)
+{
+    std::cout << "The address of the complex is " << address << " and we have " << numCarParkSpots - (myTeam.numPlayersInProgram + myTeam.numCoaches)  << " car parking spots left most days" << std::endl;
+
+    int numCarParkSpotsToday = { };
+
+    if(numStaffToday < numCarParkSpots)
+    {
+        for(int i = 0; i < numStaffToday; ++i)
+        {
+            ++numCarParkSpotsToday;
+        }
+        std::cout << "Today we have " << (numCarParkSpots - numCarParkSpotsToday) << " left" << std::endl;
+    }
+    else
+    {
+        std::cout << "We don't have enough spots for everyone today - please try and car pull!" << std::endl;
+    }  
+}
+
+float TrainingComplex::costToFeedStaff(int howManyStaffWorkingToday, int numTrainingSessions)
+{
+    numMealsServed = howManyStaffWorkingToday * numTrainingSessions;
+    return numMealsServed * costPerMeal;
+}
+
+void TrainingComplex::providePlayerRehab(Staff player)
+{
+    if(player.injuryType == "Muscular")
+    {
+       therapyType = "Massage";
+       std::cout << player.name << " has Muscular pain and will require " << therapyType << " treatment" << "\n";
+    }
+}
+
+
 
 /*
  new UDT 4:
@@ -71,5 +314,11 @@ Purpose:  This project continues developing Project3.
 #include <iostream>
 int main()
 {
-    std::cout << "good to go!" << std::endl;
+    //std::cout << "good to go!" << std::endl;
+
+    TeamProgram myTeam;
+
+    TrainingComplex myComplex;
+
+    Staff myStaff;
 }
