@@ -97,6 +97,17 @@ struct TeamProgram
     int numCoachesRequired();
     //advertise for players
     int advertiseForPlayers();
+
+    void startingBudget()
+    {
+        std::cout << "Team's starting budget is: $" << this->currentBalance << "\n";
+    }
+
+    void canWeEnterTheLeague(float howMuchMoney)
+    {
+        std::cout << this->enterALeague(howMuchMoney) << std::endl;
+    }
+    
 };
 
 TeamProgram::TeamProgram()
@@ -186,6 +197,17 @@ struct Staff
     void attendMeeting();
     //sign a contract
     bool signContract(float contractOffer = 20000.f);
+
+    void hoursWorked()
+    {
+        std::cout << "Staff member has worked " << this->hoursOfWork << " hours this week over " << this->daysOfWork << " days" << std::endl;
+    }
+
+    void overtimeIndicator()
+    {
+        std::cout << (overtimeCalculator() ? "You have" : "You have NOT") << " hit overtime rate. You have racked up " << this->hoursOfWork - this->hoursOfWork << " overtime hours" << std::endl;
+    }
+       
 };
 
 Staff::Staff()
@@ -272,9 +294,14 @@ struct TrainingComplex
     //host training session
     void numOfFreeParkingSpaces(int, TeamProgram);
     //feed staff
-    float costToFeedStaff(int howManyStaffWorkingToday = 75, int numTrainingSessions = 2);
+    void calculateNumStaffToFeed(int howManyStaffWorkingToday = 75, int numTrainingSessions = 2);
     //provide player rehab
     void providePlayerRehab(Staff player);
+
+    void dailyMealsCost()
+    {
+        std::cout << "It will cost us $" << this->numMealsServed * this->costPerMeal << " to feed the staff." << std::endl;
+    }
 };
 
 TrainingComplex::TrainingComplex()
@@ -308,10 +335,9 @@ void TrainingComplex::numOfFreeParkingSpaces(int numStaffToday, TeamProgram myTe
     }  
 }
 
-float TrainingComplex::costToFeedStaff(int howManyStaffWorkingToday, int numTrainingSessions)
+void TrainingComplex::calculateNumStaffToFeed(int howManyStaffWorkingToday, int numTrainingSessions)
 {
-    numMealsServed = howManyStaffWorkingToday * numTrainingSessions;
-    return numMealsServed * costPerMeal;
+    this->numMealsServed = howManyStaffWorkingToday * numTrainingSessions;
 }
 
 void TrainingComplex::providePlayerRehab(Staff player)
@@ -340,6 +366,12 @@ void TrainingComplex::providePlayerRehab(Staff player)
 
     int numberOfLockersSpare();
     float coachWagesPerAnnum();
+
+    void printNumSpareLockers()
+    {
+        std::cout << "The gym currently has " << this->numberOfLockersSpare() << " spare lockers." << std::endl;
+    }
+    
  };
 
  SoccerTeam::SoccerTeam()
@@ -388,6 +420,11 @@ float SoccerTeam::coachWagesPerAnnum()
 
      void whereAreWeTraining(bool);
      void trainingDaysHours(std::string);
+
+     void hoursLeftOfWork(){         
+         std::cout << "After Monday, the coach has " << this->coach.hoursOfWork << " hours left to work in the week and the player has " << this->player.hoursOfWork << " hours left to work in the week" << std::endl; 
+     }
+     
  };
 
 RugbyTeam::RugbyTeam()
@@ -460,9 +497,14 @@ int main()
     std::cout << "\n";
     std::cout << "-----------------------------------" << "\n";
     std::cout << "1) Team Program UDT" << "\n";
+    
     myTeam.currentBalance = 35459.f;
     std::cout << "Team's starting budget is: $" << myTeam.currentBalance << "\n";
+    myTeam.startingBudget();
+    
     std::cout << myTeam.enterALeague(50000) << std::endl;
+    myTeam.canWeEnterTheLeague(50000);
+
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
 
@@ -475,8 +517,15 @@ int main()
     {
         myStaffMember.daysAndHoursCalculator(1);
     }
+
     std::cout << "Staff member has worked " << myStaffMember.hoursOfWork << " hours this week over " << myStaffMember.daysOfWork << " days" << std::endl;
-    std::cout << (myStaffMember.overtimeCalculator() ? "You have" : "You have NOT") << " hit overtime rate" << std::endl;
+
+    myStaffMember.hoursWorked();
+
+    std::cout << (myStaffMember.overtimeCalculator() ? "You have" : "You have NOT") << " hit overtime rate. You have racked up " << myStaffMember.hoursOfWork - myStaffMember.hoursOfWork << " overtime hours" << std::endl;
+    
+    myStaffMember.overtimeIndicator();
+
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
     
@@ -486,24 +535,46 @@ int main()
     std::cout << "-----------------------------------" << "\n";
     std::cout << "3) Training Complex UDT" << "\n";
     myTrainingGround.numOfFreeParkingSpaces(80, myTeam);
+    myTrainingGround.calculateNumStaffToFeed(75, 2);
+
+    std::cout << "It will cost us $" << myTrainingGround.numMealsServed * myTrainingGround.costPerMeal << " to feed the staff." << std::endl;
+
+    myTrainingGround.dailyMealsCost();
+
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
 
-
+    //4) Soccer Team
     std::cout << "\n";
     std::cout << "-----------------------------------" << "\n";
+    std::cout << "4) Soccer Team UDT" << "\n";
     SoccerTeam mySoccerTeam;
+
+    std::cout << "The gym currently has " << mySoccerTeam.numberOfLockersSpare() << " spare lockers." << std::endl;
+    mySoccerTeam.printNumSpareLockers();
+
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
     
+    //5) Rugby Team
     std::cout << "\n";
     std::cout << "-----------------------------------" << "\n";
+    std::cout << "5) Rugby Team UDT" << "\n";
     RugbyTeam myRugbyTeam;
+
+    myRugbyTeam.whereAreWeTraining(0);
+
+    myRugbyTeam.trainingDaysHours("Monday");
+
+    std::cout << "After Monday, the coach has " << myRugbyTeam.coach.hoursOfWork << " hours left to work in the week and the player has " << myRugbyTeam.player.hoursOfWork << " hours left to work in the week" << std::endl;
+
+    myRugbyTeam.hoursLeftOfWork(); 
+
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
     
     /*
-    std::cout << "The gym currently has " << mySoccerTeam.numberOfLockersSpare() << " spare lockers." << std::endl;
+    
 
     std::cout << "Our coaches salary for this year will be $" << mySoccerTeam.coachWagesPerAnnum() << std::endl;
 
