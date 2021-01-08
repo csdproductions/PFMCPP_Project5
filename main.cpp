@@ -103,9 +103,20 @@ struct TeamProgram
         std::cout << "Team's starting budget is: $" << this->currentBalance << "\n";
     }
 
-    void canWeEnterTheLeague(float howMuchMoney)
+    void howManyPlayersDoWeNeed(int numPlayersInProgram)
     {
-        std::cout << this->enterALeague(howMuchMoney) << std::endl;
+        this->numPlayersInProgram = numPlayersInProgram;
+
+        std::cout << "We've got " << this->numPlayersInProgram << " registered players and " << this->maxNumPlayersInProgram << " spots available." << std::endl;
+
+        if(this->advertiseForPlayers() <= 0)
+        {
+            std::cout << "Roster is full!" << std::endl;
+        }
+        else
+        {
+        std::cout << "We have " << this->advertiseForPlayers() << " spots still left to fill!" << std::endl;
+        }
     }
     
 };
@@ -317,17 +328,17 @@ TrainingComplex::~TrainingComplex()
 
 void TrainingComplex::numOfFreeParkingSpaces(int numStaffToday, TeamProgram myTeam)
 {
-    std::cout << "The address of the complex is " << address << " and we have " << numCarParkSpots - (myTeam.numPlayersInProgram + myTeam.numCoaches)  << " car parking spots left most days" << std::endl;
+    std::cout << "The address of the complex is " << this->address << " and we have " << numCarParkSpots - (myTeam.numPlayersInProgram + myTeam.numCoaches)  << " car parking spots left most days" << std::endl;
 
     int numCarParkSpotsToday = { };
 
-    if(numStaffToday < numCarParkSpots)
+    if(numStaffToday < this->numCarParkSpots)
     {
         for(int i = 0; i < numStaffToday; ++i)
         {
             ++numCarParkSpotsToday;
         }
-        std::cout << "Today we have " << (numCarParkSpots - numCarParkSpotsToday) << " left" << std::endl;
+        std::cout << "Today we have " << (this->numCarParkSpots - numCarParkSpotsToday) << " left" << std::endl;
     }
     else
     {
@@ -502,8 +513,20 @@ int main()
     std::cout << "Team's starting budget is: $" << myTeam.currentBalance << "\n";
     myTeam.startingBudget();
     
-    std::cout << myTeam.enterALeague(50000) << std::endl;
-    myTeam.canWeEnterTheLeague(50000);
+    myTeam.numPlayersInProgram = 22;
+
+    std::cout << "We've got " << myTeam.numPlayersInProgram << " registered players and " << myTeam.maxNumPlayersInProgram << " spots available." << std::endl;
+
+    if(myTeam.advertiseForPlayers() <= 0)
+    {
+        std::cout << "Roster is full!" << std::endl;
+    }
+    else
+    {
+        std::cout << "We have " << myTeam.advertiseForPlayers() << " spots still left to fill!" << std::endl;
+    }
+
+    myTeam.howManyPlayersDoWeNeed(22);
 
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
@@ -534,7 +557,27 @@ int main()
     std::cout << "\n";
     std::cout << "-----------------------------------" << "\n";
     std::cout << "3) Training Complex UDT" << "\n";
+    
+    std::cout << "The address of the complex is " << myTrainingGround.address << " and we have " << myTrainingGround.numCarParkSpots - (myTeam.numPlayersInProgram + myTeam.numCoaches)  << " car parking spots left most days" << std::endl;
+
+    int numCarParkSpotsToday = { };
+    int numStaffToday = 80;
+
+    if(numStaffToday < myTrainingGround.numCarParkSpots)
+    {
+        for(int i = 0; i < numStaffToday; ++i)
+        {
+            ++numCarParkSpotsToday;
+        }
+        std::cout << "Today we have " << (myTrainingGround.numCarParkSpots - numCarParkSpotsToday) << " left" << std::endl;
+    }
+    else
+    {
+        std::cout << "We don't have enough spots for everyone today - please try and car pull!" << std::endl;
+    }  
+    
     myTrainingGround.numOfFreeParkingSpaces(80, myTeam);
+
     myTrainingGround.calculateNumStaffToFeed(75, 2);
 
     std::cout << "It will cost us $" << myTrainingGround.numMealsServed * myTrainingGround.costPerMeal << " to feed the staff." << std::endl;
