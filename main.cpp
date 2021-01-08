@@ -103,9 +103,9 @@ struct TeamProgram
         std::cout << "Team's starting budget is: $" << this->currentBalance << "\n";
     }
 
-    void howManyPlayersDoWeNeed(int numPlayersInProgram)
+    void howManyPlayersDoWeNeed(int playersInProgram)
     {
-        this->numPlayersInProgram = numPlayersInProgram;
+        this->numPlayersInProgram = playersInProgram;
 
         std::cout << "We've got " << this->numPlayersInProgram << " registered players and " << this->maxNumPlayersInProgram << " spots available." << std::endl;
 
