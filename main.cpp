@@ -51,6 +51,8 @@ You don't have to do this, you can keep your current object name and just change
 
 #include <iostream>
 
+#include "LeakedObjectDetector.h"
+
 /*
  copied UDT 1:
  */
@@ -104,7 +106,8 @@ struct TeamProgram
         std::cout << "We have " << this->advertiseForPlayers() << " spots still left to fill!" << std::endl;
         }
     }
-    
+
+    JUCE_LEAK_DETECTOR(TeamProgram)
 };
 
 TeamProgram::TeamProgram()
@@ -158,6 +161,18 @@ int TeamProgram::advertiseForPlayers()
     return maxNumPlayersInProgram - numPlayersInProgram;
 }
 
+struct TeamProgramWrapper
+{
+    TeamProgramWrapper(TeamProgram* ptr) : ptrToTeamProgram (ptr){ }
+    ~TeamProgramWrapper()
+    {
+        delete ptrToTeamProgram;
+        ptrToTeamProgram = nullptr;
+    }
+    
+    TeamProgram* ptrToTeamProgram = nullptr;
+};
+
 /*
  copied UDT 2:
  */
@@ -204,7 +219,8 @@ struct Staff
     {
         std::cout << (overtimeCalculator() ? "You have" : "You have NOT") << " hit overtime rate. You have racked up " << this->hoursOfWork - this->hoursOfWork << " overtime hours" << std::endl;
     }
-       
+    
+    JUCE_LEAK_DETECTOR(Staff)
 };
 
 Staff::Staff()
@@ -264,6 +280,18 @@ bool Staff::signContract(float contractOffer)
     return false;
 }
 
+struct StaffWrapper
+{
+    StaffWrapper(Staff* ptr) : ptrToStaff (ptr) { }
+    ~StaffWrapper()
+    {
+        delete ptrToStaff;
+        ptrToStaff = nullptr;
+    }
+
+    Staff* ptrToStaff = nullptr;
+};
+
 /*
  copied UDT 3:
  */
@@ -299,6 +327,8 @@ struct TrainingComplex
     {
         std::cout << "It will cost us $" << this->numMealsServed * this->costPerMeal << " to feed the staff." << std::endl;
     }
+
+    JUCE_LEAK_DETECTOR(TrainingComplex)
 };
 
 TrainingComplex::TrainingComplex()
@@ -346,6 +376,18 @@ void TrainingComplex::providePlayerRehab(Staff player)
     }
 }
 
+struct TrainingComplexWrapper
+{
+    TrainingComplexWrapper(TrainingComplex* ptr) : ptrToTrainingComplex(ptr) { }
+    ~TrainingComplexWrapper()
+    {
+        delete ptrToTrainingComplex;
+        ptrToTrainingComplex = nullptr;
+    }
+
+    TrainingComplex* ptrToTrainingComplex = nullptr;
+};
+
 /*
  new UDT 4:
  with 2 member functions
@@ -368,7 +410,8 @@ void TrainingComplex::providePlayerRehab(Staff player)
     {
         std::cout << "The gym currently has " << this->numberOfLockersSpare() << " spare lockers." << std::endl;
     }
-    
+
+    JUCE_LEAK_DETECTOR(SoccerTeam)
  };
 
  SoccerTeam::SoccerTeam()
@@ -400,6 +443,18 @@ float SoccerTeam::coachWagesPerAnnum()
     return offenceCoach.salary + headCoach.salary;
 }   
 
+struct SoccerTeamWrapper
+{
+    SoccerTeamWrapper(SoccerTeam* ptr) : ptrToSoccerTeam(ptr){ }
+    ~SoccerTeamWrapper()
+    {
+        delete ptrToSoccerTeam;
+        ptrToSoccerTeam = nullptr;
+    }
+
+    SoccerTeam* ptrToSoccerTeam = nullptr;
+};
+
 /*
  new UDT 5:
  with 2 member functions
@@ -422,6 +477,7 @@ float SoccerTeam::coachWagesPerAnnum()
          std::cout << "After Monday, the coach has " << this->coach.hoursOfWork << " hours left to work in the week and the player has " << this->player.hoursOfWork << " hours left to work in the week" << std::endl; 
      }
      
+     JUCE_LEAK_DETECTOR(RugbyTeam)
  };
 
 RugbyTeam::RugbyTeam()
@@ -469,6 +525,17 @@ void RugbyTeam::trainingDaysHours(std::string day)
     }   
 }
 
+struct RugbyTeamWrapper
+{
+    RugbyTeamWrapper(RugbyTeam* ptr) : ptrToRugbyTeam(ptr){ }
+    ~RugbyTeamWrapper()
+    {
+        delete ptrToRugbyTeam;
+        ptrToRugbyTeam = nullptr;
+    }
+    RugbyTeam* ptrToRugbyTeam = nullptr;
+};
+
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
 
@@ -486,89 +553,90 @@ void RugbyTeam::trainingDaysHours(std::string day)
 #include <iostream>
 int main()
 {
-    Example::main();
+    //Example::main();
     //std::cout << "good to go!" << std::endl;
 
     //1) Team Program
-    TeamProgram myTeam;
+    TeamProgramWrapper myTeam (new TeamProgram()) ;
     std::cout << "\n";
     std::cout << "-----------------------------------" << "\n";
     std::cout << "1) Team Program UDT" << "\n";
     
-    myTeam.currentBalance = 35459.f;
-    std::cout << "Team's starting budget is: $" << myTeam.currentBalance << "\n";
-    myTeam.startingBudget();
+   
+    myTeam.ptrToTeamProgram->currentBalance = 35459.f;
+    std::cout << "Team's starting budget is: $" << myTeam.ptrToTeamProgram->currentBalance << "\n";
+    myTeam.ptrToTeamProgram->startingBudget();
     
-    myTeam.numPlayersInProgram = 22;
+    myTeam.ptrToTeamProgram->numPlayersInProgram = 22;
 
-    std::cout << "We've got " << myTeam.numPlayersInProgram << " registered players and " << myTeam.maxNumPlayersInProgram << " spots available." << std::endl;
+    std::cout << "We've got " <<  myTeam.ptrToTeamProgram->numPlayersInProgram << " registered players and " <<  myTeam.ptrToTeamProgram->maxNumPlayersInProgram << " spots available." << std::endl;
 
-    if(myTeam.advertiseForPlayers() <= 0)
+    if(myTeam.ptrToTeamProgram->advertiseForPlayers() <= 0)
     {
         std::cout << "Roster is full!" << std::endl;
     }
     else
     {
-        std::cout << "We have " << myTeam.advertiseForPlayers() << " spots still left to fill!" << std::endl;
+        std::cout << "We have " << myTeam.ptrToTeamProgram->advertiseForPlayers() << " spots still left to fill!" << std::endl;
     }
 
-    myTeam.howManyPlayersDoWeNeed(22);
+    myTeam.ptrToTeamProgram->howManyPlayersDoWeNeed(22);
 
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
 
     //2) Staff
-    Staff myStaffMember;
+    StaffWrapper myStaffMember (new Staff());
     std::cout << "\n";
     std::cout << "-----------------------------------" << "\n";
     std::cout << "2) Staff UDT" << "\n";
     for(int i = 0; i < 3; ++i)
     {
-        myStaffMember.daysAndHoursCalculator(1);
+        myStaffMember.ptrToStaff->daysAndHoursCalculator(1);
     }
 
-    std::cout << "Staff member has worked " << myStaffMember.hoursOfWork << " hours this week over " << myStaffMember.daysOfWork << " days" << std::endl;
+    std::cout << "Staff member has worked " << myStaffMember.ptrToStaff->hoursOfWork << " hours this week over " << myStaffMember.ptrToStaff->daysOfWork << " days" << std::endl;
 
-    myStaffMember.hoursWorked();
+    myStaffMember.ptrToStaff->hoursWorked();
 
-    std::cout << (myStaffMember.overtimeCalculator() ? "You have" : "You have NOT") << " hit overtime rate. You have racked up " << myStaffMember.hoursOfWork - myStaffMember.hoursOfWork << " overtime hours" << std::endl;
+    std::cout << (myStaffMember.ptrToStaff->overtimeCalculator() ? "You have" : "You have NOT") << " hit overtime rate. You have racked up " << myStaffMember.ptrToStaff->hoursOfWork - myStaffMember.ptrToStaff->hoursOfWork << " overtime hours" << std::endl;
     
-    myStaffMember.overtimeIndicator();
+    myStaffMember.ptrToStaff->overtimeIndicator();
 
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
     
     //3) Training Complex
-    TrainingComplex myTrainingGround;
+    TrainingComplexWrapper myTrainingGround(new TrainingComplex());
     std::cout << "\n";
     std::cout << "-----------------------------------" << "\n";
     std::cout << "3) Training Complex UDT" << "\n";
     
-    std::cout << "The address of the complex is " << myTrainingGround.address << " and we have " << myTrainingGround.numCarParkSpots - (myTeam.numPlayersInProgram + myTeam.numCoaches)  << " car parking spots left most days" << std::endl;
+    std::cout << "The address of the complex is " << myTrainingGround.ptrToTrainingComplex->address << " and we have " << myTrainingGround.ptrToTrainingComplex->numCarParkSpots - (myTeam.ptrToTeamProgram->numPlayersInProgram + myTeam.ptrToTeamProgram->numCoaches)  << " car parking spots left most days" << std::endl;
 
     int numCarParkSpotsToday = { };
     int numStaffToday = 80;
 
-    if(numStaffToday < myTrainingGround.numCarParkSpots)
+    if(numStaffToday < myTrainingGround.ptrToTrainingComplex->numCarParkSpots)
     {
         for(int i = 0; i < numStaffToday; ++i)
         {
             ++numCarParkSpotsToday;
         }
-        std::cout << "Today we have " << (myTrainingGround.numCarParkSpots - numCarParkSpotsToday) << " left" << std::endl;
+        std::cout << "Today we have " << (myTrainingGround.ptrToTrainingComplex->numCarParkSpots - numCarParkSpotsToday) << " left" << std::endl;
     }
     else
     {
         std::cout << "We don't have enough spots for everyone today - please try and car pull!" << std::endl;
     }  
     
-    myTrainingGround.numOfFreeParkingSpaces(80, myTeam);
+    myTrainingGround.ptrToTrainingComplex->numOfFreeParkingSpaces(80, *myTeam.ptrToTeamProgram);
 
-    myTrainingGround.calculateNumStaffToFeed(75, 2);
+    myTrainingGround.ptrToTrainingComplex->calculateNumStaffToFeed(75, 2);
 
-    std::cout << "It will cost us $" << myTrainingGround.numMealsServed * myTrainingGround.costPerMeal << " to feed the staff." << std::endl;
+    std::cout << "It will cost us $" << myTrainingGround.ptrToTrainingComplex->numMealsServed * myTrainingGround.ptrToTrainingComplex->costPerMeal << " to feed the staff." << std::endl;
 
-    myTrainingGround.dailyMealsCost();
+    myTrainingGround.ptrToTrainingComplex->dailyMealsCost();
 
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
@@ -577,10 +645,10 @@ int main()
     std::cout << "\n";
     std::cout << "-----------------------------------" << "\n";
     std::cout << "4) Soccer Team UDT" << "\n";
-    SoccerTeam mySoccerTeam;
+    SoccerTeamWrapper mySoccerTeam(new SoccerTeam());
 
-    std::cout << "The gym currently has " << mySoccerTeam.numberOfLockersSpare() << " spare lockers." << std::endl;
-    mySoccerTeam.printNumSpareLockers();
+    std::cout << "The gym currently has " << mySoccerTeam.ptrToSoccerTeam->numberOfLockersSpare() << " spare lockers." << std::endl;
+    mySoccerTeam.ptrToSoccerTeam->printNumSpareLockers();
 
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
@@ -589,15 +657,15 @@ int main()
     std::cout << "\n";
     std::cout << "-----------------------------------" << "\n";
     std::cout << "5) Rugby Team UDT" << "\n";
-    RugbyTeam myRugbyTeam;
+    RugbyTeamWrapper myRugbyTeam(new RugbyTeam());
 
-    myRugbyTeam.whereAreWeTraining(0);
+    myRugbyTeam.ptrToRugbyTeam->whereAreWeTraining(0);
 
-    myRugbyTeam.trainingDaysHours("Monday");
+    myRugbyTeam.ptrToRugbyTeam->trainingDaysHours("Monday");
 
-    std::cout << "After Monday, the coach has " << myRugbyTeam.coach.hoursOfWork << " hours left to work in the week and the player has " << myRugbyTeam.player.hoursOfWork << " hours left to work in the week" << std::endl;
+    std::cout << "After Monday, the coach has " << myRugbyTeam.ptrToRugbyTeam->coach.hoursOfWork << " hours left to work in the week and the player has " << myRugbyTeam.ptrToRugbyTeam->player.hoursOfWork << " hours left to work in the week" << std::endl;
 
-    myRugbyTeam.hoursLeftOfWork(); 
+    myRugbyTeam.ptrToRugbyTeam->hoursLeftOfWork(); 
 
     std::cout << "-----------------------------------" << "\n";
     std::cout << "\n";
