@@ -5,9 +5,8 @@
 
 #include "LeakedObjectDetector.h"
 
-
 struct RugbyTeam
- {
+{
      TeamProgram rugbyProgram;
      Staff coach;
      Staff player;
@@ -23,6 +22,4 @@ struct RugbyTeam
      void hoursOfWorkLeft();
      
      JUCE_LEAK_DETECTOR(RugbyTeam)
-
- };
- 
+};

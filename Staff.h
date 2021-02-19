@@ -41,5 +41,4 @@ struct Staff
     void overtimeIndicator();
     
     JUCE_LEAK_DETECTOR(Staff)
-
 };

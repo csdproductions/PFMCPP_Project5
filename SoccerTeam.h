@@ -6,7 +6,7 @@
 #include "TrainingComplex.h"
 
 struct SoccerTeam
- {
+{
     TeamProgram soccerProgram;
     Staff headCoach;
     Staff offenceCoach;
@@ -22,6 +22,4 @@ struct SoccerTeam
     void printNumSpareLockers();
 
     JUCE_LEAK_DETECTOR(SoccerTeam)
-
- };
- 
+};

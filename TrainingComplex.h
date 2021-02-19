@@ -35,5 +35,4 @@ struct TrainingComplex
     void dailyMealsCost();
 
     JUCE_LEAK_DETECTOR(TrainingComplex)
-
 };

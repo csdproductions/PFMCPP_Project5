@@ -37,5 +37,4 @@ struct TeamProgram
     void howManyPlayersDoWeNeed(int playersInProgram);
 
     JUCE_LEAK_DETECTOR(TeamProgram)
-
 };

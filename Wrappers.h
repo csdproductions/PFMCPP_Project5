@@ -49,4 +49,3 @@ struct TrainingComplexWrapper
 
     TrainingComplex* ptrToTrainingComplex = nullptr;
 };
-
