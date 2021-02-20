@@ -38,11 +38,8 @@ void Staff::daysAndHoursCalculator(int dayType)
 bool Staff::overtimeCalculator()
 {
     std::cout << "Standard working hours in a week for an employee must total " << requiredHoursOfWork << " before they hit overtime." << std::endl;
-    if(hoursOfWork < 0)
-    {
-        return true;
-    }
-    return false;
+    
+    return (hoursOfWork < 0);
 }
 
 void Staff::attendMeeting()
@@ -52,11 +49,7 @@ void Staff::attendMeeting()
 
 bool Staff::signContract(float contractOffer)
 {
-    if(contractOffer > 20000.f)
-    {
-        return true;
-    }
-    return false;
+    return (contractOffer > 20000.f);
 }
 
 void Staff::hoursWorked() 

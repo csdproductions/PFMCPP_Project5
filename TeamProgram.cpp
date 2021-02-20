@@ -70,6 +70,6 @@ void TeamProgram::howManyPlayersDoWeNeed(int playersInProgram)
     }
     else
     {
-    std::cout << "We have " << this->advertiseForPlayers() << " spots still left to fill!" << std::endl;
+        std::cout << "We have " << this->advertiseForPlayers() << " spots still left to fill!" << std::endl;
     }
 }

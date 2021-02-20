@@ -1,5 +1,8 @@
 #include "Wrappers.h"
 
+#include "RugbyTeam.h"
+#include "SoccerTeam.h"
+
 #include "Staff.h"
 #include "TrainingComplex.h"
 

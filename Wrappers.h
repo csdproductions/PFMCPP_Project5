@@ -1,8 +1,5 @@
 #pragma once
 
-#include "RugbyTeam.h"
-#include "SoccerTeam.h"
-
 // Not using these objects, just asking for a pointer of these types
 struct RugbyTeam;
 struct SoccerTeam;
