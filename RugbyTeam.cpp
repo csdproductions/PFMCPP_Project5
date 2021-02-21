@@ -37,7 +37,8 @@ void RugbyTeam::trainingDaysHours(std::string day)
     if(day == "Monday")
     {
         coach.daysAndHoursCalculator(1);
-    }else if(day == "Wednesday")
+    }
+    else if(day == "Wednesday")
     {
         coach.daysAndHoursCalculator(1);
         player.daysAndHoursCalculator(1);
